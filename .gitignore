@@ -1,0 +1,13 @@
+requirements.test.txt
+.vscode/*
+*.pyc
+*.swp
+__pycache__
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Optional npm cache directory
+.npm

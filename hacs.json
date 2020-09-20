@@ -1,0 +1,7 @@
+{
+  "name": "Ebeco thermostats",
+  "domains": [
+      "climate"
+  ],
+  "iot_class": "Cloud Polling"
+}
