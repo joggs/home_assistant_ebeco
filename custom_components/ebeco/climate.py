@@ -3,7 +3,6 @@ import asyncio
 import datetime
 import json
 import logging
-
 import aiohttp
 import ssl
 import async_timeout
@@ -34,15 +33,16 @@ from enum import Enum
 
 _LOGGER = logging.getLogger(__name__)
 
-PRESET_MANUAL = "Manual"
-PRESET_PROGRAM = "Program"
-PRESET_TIMER = "Timer"
+PRESET_MANUAL = "Manual"  # Enable Manual mode on the thermostat
+PRESET_WEEK = "Home"  # Enable The Week program on the thermostat, defined in the phone app or thermostat menu. Misleading value "home" in api instead of "week"
+PRESET_TIMER = "Timer"  # Enable the timer on the thermostat, defined in the phone app or thermostat menu
+MAIN_SENSOR = "main_sensor"
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     {
         vol.Required(CONF_USERNAME): cv.string,
         vol.Required(CONF_PASSWORD): cv.string,
-        vol.Optional("main_sensor", default="floor"): vol.In(["floor", "room"]),
+        vol.Optional(MAIN_SENSOR, default="floor"): vol.In(["floor", "room"]),
     }
 )
 
@@ -54,11 +54,10 @@ class RequestType(Enum):
 
 
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
-
     """Set up the thermostat."""
     username = config[CONF_USERNAME]
     password = config[CONF_PASSWORD]
-    main_sensor = config["main_sensor"]
+    main_sensor = config[MAIN_SENSOR]
 
     ebeco_data_handler = Ebeco(
         username, password, websession=async_get_clientsession(hass)
@@ -80,7 +79,7 @@ class EbecoDevice(ClimateEntity):
     @property
     def supported_features(self):
         """Return the list of supported features."""
-        return SUPPORT_TARGET_TEMPERATURE  # | SUPPORT_PRESET_MODE #To be implemented after getting some answers
+        return SUPPORT_TARGET_TEMPERATURE | SUPPORT_PRESET_MODE
 
     @property
     def unique_id(self):
@@ -184,30 +183,22 @@ class EbecoDevice(ClimateEntity):
     @property
     def preset_modes(self):
         """Return valid preset modes."""
-        return [PRESET_MANUAL, PRESET_PROGRAM, PRESET_TIMER]
+        return [PRESET_MANUAL, PRESET_WEEK, PRESET_TIMER]
 
     async def async_set_hvac_mode(self, hvac_mode):
         """Set hvac mode."""
-        # self.hvac_mode = hvac_mode
-
-        """Set hvac mode."""
         if hvac_mode == HVAC_MODE_HEAT:
             await self._ebeco_data_handler.set_powerstate(self._device_data["id"], True)
-        #
-        #  self._device_data["powerOn"] = True
-
         elif hvac_mode == HVAC_MODE_OFF:
             await self._ebeco_data_handler.set_powerstate(
                 self._device_data["id"], False
             )
-        # self._device_data["powerOn"] = False
         else:
             return
         await self._ebeco_data_handler.update(force_update=True)
 
     async def async_set_temperature(self, **kwargs):
         """Set new target temperature."""
-
         temperature = kwargs.get(ATTR_TEMPERATURE)
         if temperature is None:
             return
@@ -216,28 +207,24 @@ class EbecoDevice(ClimateEntity):
         )
         await self._ebeco_data_handler.update(force_update=True)
 
-    async def async_update(self):
-        """Get the latest data."""
-
-        for device in await self._ebeco_data_handler.get_devices():
-
-            if device["id"] == self._device_data["id"]:
-
-                self._device_data = device
-                return
-
-    # To be implemented after getting some answers
     async def async_set_preset_mode(self, preset_mode):
-        """Set the hold mode."""
         await self._ebeco_data_handler.set_preset_mode(
             self._device_data["id"], preset_mode
         )
+        await self._ebeco_data_handler.update(force_update=True)
+
+    async def async_update(self):
+        """Get the latest data."""
+        for device in await self._ebeco_data_handler.get_devices():
+            if device["id"] == self._device_data["id"]:
+                self._device_data = device
+                return
 
 
 ######
 
 
-API_URL = "https://ebecoconnect.com/api"  # services/app/Devices
+API_URL = "https://ebecoconnect.com/api"
 
 
 class Ebeco:
@@ -245,6 +232,7 @@ class Ebeco:
 
     def __init__(self, username, password, websession):
         """Init ebeco data handler."""
+
         self._username = username
         self._password = password
         self.websession = websession
@@ -260,7 +248,6 @@ class Ebeco:
         await self.update()
         return self._devices
 
-    # skicka inte med temp om stänger av
     async def update(self, force_update=False):
         """Update data."""
 
@@ -302,6 +289,17 @@ class Ebeco:
             json_data=json_data,
         )
 
+    async def set_preset_mode(self, device_id, preset_mode):
+        json_data = {
+            "id": device_id,
+            "selectedProgram": preset_mode,
+        }
+        await self._request(
+            API_URL + "/services/app/Devices/UpdateUserDevice",
+            RequestType.PUT,
+            json_data=json_data,
+        )
+
     async def fetch_user_devices(self):
         """Get user devices"""
 
@@ -335,71 +333,57 @@ class Ebeco:
         )
 
         self._access_token = token_data.result.accessToken
-
         self._authHeader = {"Authorization": f"Bearer {self._access_token}"}
 
     async def _request(self, url, requesttype, json_data=None, retry=3):
 
         if self._access_token is None:
-
             await self._getAccessToken(self)
         try:
             with async_timeout.timeout(self._timeout):
                 if json_data:
-
                     if requesttype == RequestType.GET:
-
                         response = await self.websession.get(
                             url, json=json_data, headers=self._authHeader
                         )
                     elif requesttype == RequestType.POST:
-
                         response = await self.websession.post(
                             url, json=json_data, headers=self._authHeader
                         )
                     else:
-
                         response = await self.websession.put(
                             url, json=json_data, headers=self._authHeader
                         )
 
                 else:  # If no json_data
-
                     if requesttype == RequestType.GET:
-
                         response = await self.websession.get(
                             url, headers=self._authHeader
                         )
                     elif requesttype == RequestType.POST:
-
                         response = await self.websession.post(
                             url, headers=self._authHeader
                         )
                     else:
-
                         response = await self.websession.put(
                             url, headers=self._authHeader
                         )
 
             if response.status != 200:
-
                 self._access_token = None
                 if retry > 0:
                     await asyncio.sleep(1)
                     return await self._request(
                         url, requesttype, json_data, retry=retry - 1
                     )
-
                 return None
         except aiohttp.ClientError as err:
 
             self._access_token = None
             if retry > 0:
                 return await self._request(url, requesttype, json_data, retry=retry - 1)
-
             raise
         except asyncio.TimeoutError:
-
             self._access_token = None
             if retry > 0:
                 return await self._request(url, requesttype, json_data, retry=retry - 1)
