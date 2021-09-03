@@ -13,6 +13,9 @@ from homeassistant.components.climate.const import (
     SUPPORT_TARGET_TEMPERATURE,
     HVAC_MODE_OFF,
     HVAC_MODE_HEAT,
+    CURRENT_HVAC_HEAT,
+    CURRENT_HVAC_IDLE,
+    CURRENT_HVAC_OFF,
     SUPPORT_PRESET_MODE,
     ATTR_PRESET_MODE,
     ATTR_PRESET_MODES,
@@ -93,12 +96,15 @@ class EbecoDevice(ClimateEntity):
 
     @property
     def hvac_action(self):
-        """Return hvac operation ie. heat, cool mode.
-        Need to be one of HVAC_MODE_*.
+        """Return hvac action ie. the thermostat relay state.
+        Need to be one of CURRENT_HVAC_*.
         """
-        if self._device_data["powerOn"]:
-            return HVAC_MODE_HEAT
-        return HVAC_MODE_OFF
+        if self.hvac_mode == HVAC_MODE_HEAT:
+            if self._device_data["relayOn"]:
+                return CURRENT_HVAC_HEAT
+            return CURRENT_HVAC_IDLE
+        else:
+            return CURRENT_HVAC_OFF
 
     @property
     def hvac_mode(self):
