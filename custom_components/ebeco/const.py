@@ -11,6 +11,8 @@ PRESET_TIMER = "Timer"  # Enable the timer on the thermostat, defined in the pho
 
 
 class EbecoClimateActions(StrEnum):
+    """List of available actions for the climate platform."""
+
     SET_ROOM_TARGET_TEMPERATURE = "set_room_target_temperature"
     SET_POWERSTATE = "set_powerstate"
     SET_PRESET_MODE = "set_preset_mode"

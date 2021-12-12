@@ -1,7 +1,6 @@
 """Ebeco thermostat integration."""
 
 from datetime import timedelta
-from enum import Enum
 import logging
 
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
