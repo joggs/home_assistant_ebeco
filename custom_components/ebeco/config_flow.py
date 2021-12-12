@@ -7,7 +7,7 @@ from homeassistant.const import CONF_DEVICE_ID, CONF_EMAIL, CONF_PASSWORD
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .const import MAIN_SENSOR, DOMAIN
-from .data_handler import Ebeco
+from .data_handler import EbecoApi
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -33,7 +33,7 @@ class EbecoFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             password = user_input[CONF_PASSWORD]
 
             try:
-                data = await Ebeco(
+                data = await EbecoApi(
                     email, password, async_get_clientsession(self.hass)
                 ).fetch_user_devices()
             except Exception:

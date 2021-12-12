@@ -25,7 +25,4 @@ class EbecoEntity(CoordinatorEntity):
 
     @property
     def _device(self):
-        for device in self.coordinator.data:
-            if device["id"] == self.device_key:
-                return device
-        return None
+        return self.coordinator.data

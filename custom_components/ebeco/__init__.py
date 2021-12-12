@@ -5,11 +5,12 @@ from enum import Enum
 import logging
 
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from homeassistant.const import CONF_EMAIL, CONF_PASSWORD, Platform
+from homeassistant.const import CONF_DEVICE_ID, CONF_EMAIL, CONF_PASSWORD, Platform
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .const import DOMAIN, REFRESH_INTERVAL_MINUTES
-from .data_handler import Ebeco
+from .data_handler import EbecoApi
+from .ebeco_device import EbecoDevice
 
 PLATFORMS = [
     Platform.CLIMATE,
@@ -23,15 +24,17 @@ async def async_setup_entry(hass, entry):
     """Set up the thermostat."""
     username = entry.data[CONF_EMAIL]
     password = entry.data[CONF_PASSWORD]
+    device_id = entry.data[CONF_DEVICE_ID]
 
-    ebeco_data_handler = Ebeco(
-        username, password, websession=async_get_clientsession(hass)
+    device = EbecoDevice(
+        device_id,
+        EbecoApi(username, password, websession=async_get_clientsession(hass)),
     )
 
     async def async_get():
         _LOGGER.debug("Attempting to fetch new data from Ebeco API")
         try:
-            data = await ebeco_data_handler.fetch_user_devices()
+            data = await device.async_get()
             _LOGGER.debug("Received data: %s", data)
             return data
         except Exception as err:
@@ -47,8 +50,8 @@ async def async_setup_entry(hass, entry):
 
     async def async_change(change):
         try:
-            if await ebeco_data_handler.async_change(change):
-                data = await ebeco_data_handler.get_devices()
+            if await device.async_change(change):
+                data = await device.get_device()
                 await coordinator.async_set_updated_data(data)
         except Exception:
             _LOGGER.exception("Failed to apply changes to thermostat")

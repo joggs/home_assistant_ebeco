@@ -33,9 +33,9 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
     instance = hass.data[EBECO_DOMAIN][config_entry.entry_id]
     sensor = config_entry.data[MAIN_SENSOR]
+    device_data = instance["coordinator"].data
     dev = []
-    for device_data in instance["coordinator"].data:
-        dev.append(EbecoClimateDevice(instance, device_data, sensor))
+    dev.append(EbecoClimateDevice(instance, device_data, sensor))
     async_add_entities(dev)
 
 
