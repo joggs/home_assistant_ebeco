@@ -6,5 +6,5 @@
   "requirements": [],
   "codeowners": ["@joggs"],
   "issue_tracker": "https://github.com/joggs/home_assistant_ebeco/issues",
-  "config_flow": false
+  "config_flow": true
 }
