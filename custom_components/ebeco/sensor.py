@@ -28,7 +28,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up Ebeco sensor platform."""
 
     instance = hass.data[EBECO_DOMAIN][config_entry.entry_id]
-    sensor = config_entry.data["main_sensor"]
+    sensor = config_entry.data[MAIN_SENSOR]
     device_data = instance["coordinator"].data
     dev = []
     dev.append(EbecoRelaySensor(instance, device_data, sensor))
