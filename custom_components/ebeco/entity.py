@@ -24,5 +24,10 @@ class EbecoEntity(CoordinatorEntity):
         )
 
     @property
+    def building(self):
+        """Which building this entity is installed in."""
+        return self._device["building"]["name"]
+
+    @property
     def _device(self):
         return self.coordinator.data
