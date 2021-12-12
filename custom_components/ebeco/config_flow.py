@@ -3,7 +3,7 @@ import voluptuous as vol
 import logging
 
 from homeassistant import config_entries
-from homeassistant.const import CONF_DEVICE, CONF_EMAIL, CONF_PASSWORD
+from homeassistant.const import CONF_DEVICE_ID, CONF_EMAIL, CONF_PASSWORD
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .const import MAIN_SENSOR, DOMAIN
@@ -53,7 +53,7 @@ class EbecoFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         """Get device selection from the user."""
         errors = {}
         if user_input is not None:
-            device = user_input[CONF_DEVICE]
+            device = user_input[CONF_DEVICE_ID]
             main_sensor = user_input[MAIN_SENSOR]
 
             await self.async_set_unique_id(device)
@@ -63,7 +63,7 @@ class EbecoFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 (e for e in self.init_data["devices"] if str(e["id"]) == device), None
             )
             data = {
-                CONF_DEVICE: device,
+                CONF_DEVICE_ID: device,
                 MAIN_SENSOR: main_sensor,
                 CONF_EMAIL: self.init_data[CONF_EMAIL],
                 CONF_PASSWORD: self.init_data[CONF_PASSWORD],
@@ -79,7 +79,7 @@ class EbecoFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         }
         schema = vol.Schema(
             {
-                vol.Required(CONF_DEVICE): vol.In(devices),
+                vol.Required(CONF_DEVICE_ID): vol.In(devices),
                 vol.Optional(MAIN_SENSOR, default="floor"): vol.In(["floor", "room"]),
             }
         )
