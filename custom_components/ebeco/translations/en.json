@@ -1,0 +1,29 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Device is already configured"
+        },
+        "error": {
+            "cannot_connect": "Failed to connect"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "email": "Username (email address)",
+                    "password": "Password",
+                    "main_sensor": "Main sensor location"
+                },
+                "description": "Connect to the API of your Ebeco thermostat(s).",
+                "title": "Connect"
+            },
+            "pick_device": {
+                "data": {
+                    "main_sensor": "Main sensor location",
+                    "device": "Thermostat to connect to"
+                },
+                "title": "Pick thermostat",
+                "description": "Select which thermostat and which sensor to use for monitoring"
+            }
+        }
+    }
+}
