@@ -51,7 +51,7 @@ async def async_setup_entry(hass, entry):
         try:
             if await device.async_change(change):
                 data = await device.get_device()
-                await coordinator.async_set_updated_data(data)
+                coordinator.async_set_updated_data(data)
         except Exception:
             _LOGGER.exception("Failed to apply changes to thermostat")
             return False
