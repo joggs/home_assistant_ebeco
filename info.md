@@ -17,15 +17,13 @@ Please be careful and do NOT install this on production systems. Also make sure 
 - Support for Ebeco thermostats
 - See temperature and set temperature
 - Change set temperature and turn on/off
+- Track power & energy usage
 
 
 ## Install
-In configuration.yaml:
 
-```
-climate:
-  - platform: ebeco
-    username: "xxxx"  # replace with your Ebeco connect username or email address. Required
-    password: "yyyy"  # replace with your Ebeco connect password. Required
-    main_sensor: "zzzz" # floor or room. Optional. Default: floor
-```
+Use hacs or copy the files to the custom_components folder in Home Assistant config.
+
+Add the integration as usual, and follow the prompts. Each device can have the main sensor either in the floor or the room.
+
+API details: https://www.ebeco.se/support/ebeco-open-api
