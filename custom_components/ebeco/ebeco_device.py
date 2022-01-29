@@ -2,7 +2,7 @@
 
 import logging
 
-from config.custom_components.ebeco.data_handler import EbecoApi
+from .data_handler import EbecoApi
 
 from .const import EbecoClimateActions
 
