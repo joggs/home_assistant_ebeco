@@ -63,9 +63,7 @@ class EbecoDevice:
             "temperatureSet": temperature,
         }
 
-        await self._ebeco_data_handler.set_room_target_temperature(
-            self._device_id, json_data
-        )
+        await self._ebeco_data_handler.set_room_target_temperature(json_data)
 
         self._device["powerOn"] = heating_enabled
         self._device["temperatureSet"] = temperature
