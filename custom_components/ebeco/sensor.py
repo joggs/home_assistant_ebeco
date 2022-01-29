@@ -109,10 +109,17 @@ class EbecoPowerSensor(EbecoEntity, SensorEntity):
         """Return the installed effect in Watts."""
         return self._device["installedEffect"]
 
+    def is_on(self) -> bool:
+        """Return the state of the relay."""
+        return self._device["relayOn"] is True
+
     @property
     def native_value(self) -> StateType:
         """Return the state of the entity."""
-        return self.installed_effect
+        if self.is_on():
+            return self.installed_effect
+
+        return 0
 
 
 class EbecoEnergySensor(EbecoEntity, SensorEntity):
