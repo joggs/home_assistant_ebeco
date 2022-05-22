@@ -3,19 +3,31 @@
 [![GitHub Release][releases-shield]][releases]
 [![hacs_badge][hacs-shield]][hacs]
 
-Custom component for using [Ebeco](https://www.ebeco.com/) thermostats in Home Assistant.
+Control your [Ebeco](https://www.ebeco.com/) thermostats from Home Assistant.
 
 [Support the developer](http://paypal.me/jorgenbergstrom)
 
+## Functionality
+
+This component will give you the following:
+* Room temperature
+* Floor temperature
+* A Home Assistant thermostat for setting the temperature
+* Current power (W)
+* Energy used last 24 hours (kWh)
+
+To make advanced settings, you need to use Ebeco app or use the physical thermostat
 
 ## Install
-Use [hacs](https://hacs.xyz/) or copy the files to the custom_components folder in Home Assistant config.
+1. Download the Ebeco app and create an account.
+2. Make sure you can manage the thermostat via the Ebeco app
+3. Install this Ebeco component via [HACS](https://hacs.xyz/) or copy the files to the custom_components folder in Home Assistant config.
+4. Restart Home Assistant and add this integration
+5. Login with the same user/pass as you've used for the Ebeco app
+6. Enjoy!
 
-Add the integration as usual, and follow the prompts.
-Each device can have the main sensor either in the floor or the room.
-
-API details: https://www.ebeco.se/support/ebeco-open-api
-
+## Ebeco's API
+Ebeco's API details: https://www.ebeco.se/support/ebeco-open-api
 
 [releases]: https://github.com/joggs/home_assistant_ebeco/releases
 [releases-shield]: https://img.shields.io/github/release/joggs/home_assistant_ebeco.svg?style=popout
