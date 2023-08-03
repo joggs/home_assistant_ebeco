@@ -17,9 +17,7 @@ class EbecoEntity(CoordinatorEntity):
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, device_key)},
             manufacturer="Ebeco",
-            main_temperature_sensor=main_sensor,
             name=self._device["displayName"],
-            building=self._device["building"]["name"],
             suggested_area="Bathroom",
         )
 
