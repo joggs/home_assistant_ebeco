@@ -9,7 +9,7 @@ from .const import DOMAIN
 class EbecoEntity(CoordinatorEntity):
     """Parent class for Ebeco Entities."""
 
-    def __init__(self, instance, device_key, main_sensor):
+    def __init__(self, instance, device_key, main_sensor) -> None:
         """Initialize common aspects of an Ebeco sensor."""
         super().__init__(instance["coordinator"])
         self.async_change = instance["async_change"]

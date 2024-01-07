@@ -1,4 +1,4 @@
-"""Constants used by the Ebeco integration"""
+"""Constants used by the Ebeco integration."""
 
 from enum import StrEnum
 

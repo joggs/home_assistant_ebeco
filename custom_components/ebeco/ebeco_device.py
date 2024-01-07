@@ -1,4 +1,4 @@
-"""Wrap a single Ebeco device and the API to communicate with it"""
+"""Wrap a single Ebeco device and the API to communicate with it."""
 
 import logging
 
@@ -11,7 +11,7 @@ _LOGGER = logging.getLogger(__name__)
 class EbecoDevice:
     """Wrap methods for a single Ebeco device."""
 
-    def __init__(self, device_id, ebeco_data_handler: EbecoApi):
+    def __init__(self, device_id, ebeco_data_handler: EbecoApi) -> None:
         self._device_id = device_id
         self._device = {}
         self._ebeco_data_handler = ebeco_data_handler
@@ -28,7 +28,7 @@ class EbecoDevice:
         return data
 
     async def async_change(self, changes) -> bool:
-        """Apply requested changes"""
+        """Apply requested changes."""
         _LOGGER.debug("Going to apply changes %s", changes)
         action = changes["action"]
 

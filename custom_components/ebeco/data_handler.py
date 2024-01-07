@@ -1,4 +1,4 @@
-"""Communicate with the Ebeco API"""
+"""Communicate with the Ebeco API."""
 
 import asyncio
 from collections import namedtuple
@@ -8,7 +8,6 @@ import json
 import logging
 
 import aiohttp
-import async_timeout
 
 API_URL = "https://ebecoconnect.com/api"
 _LOGGER = logging.getLogger(__name__)
@@ -23,7 +22,7 @@ class RequestType(Enum):
 class EbecoApi:
     """Ebeco data handler."""
 
-    def __init__(self, username, password, websession):
+    def __init__(self, username, password, websession) -> None:
         """Init ebeco data handler."""
 
         self._username = username
@@ -35,7 +34,7 @@ class EbecoApi:
         self._timeout = 10
 
     async def fetch_user_devices(self):
-        """Get user devices"""
+        """Get user devices."""
 
         response = await self._request(
             API_URL + "/services/app/Devices/GetUserDevices/", RequestType.GET
@@ -111,7 +110,7 @@ class EbecoApi:
         if self._access_token is None:
             await self._getAccessToken(self)
         try:
-            with async_timeout.timeout(self._timeout):
+            async with asyncio.timeout(self._timeout):
                 if json_data:
                     if requesttype == RequestType.GET:
                         response = await self.websession.get(

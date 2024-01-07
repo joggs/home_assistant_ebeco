@@ -1,4 +1,4 @@
-"""Config flow for Ebeco device"""
+"""Config flow for Ebeco device."""
 import logging
 
 import voluptuous as vol

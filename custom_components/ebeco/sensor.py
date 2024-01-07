@@ -10,14 +10,18 @@ from homeassistant.components.sensor import (
     SensorStateClass,
     StateType,
 )
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import UnitOfEnergy, UnitOfPower, UnitOfTemperature
+from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity import EntityCategory
 
 from .const import DOMAIN as EBECO_DOMAIN, MAIN_SENSOR
 from .entity import EbecoEntity
 
 
-async def async_setup_entry(hass, config_entry, async_add_entities):
+async def async_setup_entry(
+    hass: HomeAssistant, config_entry: ConfigEntry, async_add_entities
+):
     """Set up Ebeco sensor platform."""
 
     instance = hass.data[EBECO_DOMAIN][config_entry.entry_id]
@@ -34,7 +38,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
 
 class EbecoRelaySensor(EbecoEntity, BinarySensorEntity):
-    def __init__(self, instance, device_data, sensor):
+    def __init__(self, instance, device_data, sensor) -> None:
         """Initialize the thermostat."""
         super().__init__(instance, device_data["id"], sensor)
 
@@ -64,7 +68,7 @@ class EbecoRelaySensor(EbecoEntity, BinarySensorEntity):
 
 
 class EbecoPowerSensor(EbecoEntity, SensorEntity):
-    def __init__(self, instance, device_data, sensor):
+    def __init__(self, instance, device_data, sensor) -> None:
         """Initialize the thermostat."""
         super().__init__(instance, device_data["id"], sensor)
         self.main_sensor = MAIN_SENSOR
@@ -117,7 +121,7 @@ class EbecoPowerSensor(EbecoEntity, SensorEntity):
 
 
 class EbecoInstalledPowerSensor(EbecoEntity, SensorEntity):
-    def __init__(self, instance, device_data, sensor):
+    def __init__(self, instance, device_data, sensor) -> None:
         """Initialize the thermostat."""
         super().__init__(instance, device_data["id"], sensor)
         self.main_sensor = MAIN_SENSOR
@@ -167,7 +171,7 @@ class EbecoEnergySensor(EbecoEntity, SensorEntity):
     _divisor: int = 1
     _multiplier: int = 1
 
-    def __init__(self, instance, device_data, sensor):
+    def __init__(self, instance, device_data, sensor) -> None:
         """Initialize the thermostat energy sensor."""
         super().__init__(instance, device_data["id"], sensor)
         self.main_sensor = MAIN_SENSOR
@@ -224,7 +228,7 @@ class EbecoEnergySensor(EbecoEntity, SensorEntity):
 
 
 class EbecoTemperatureSensor(EbecoEntity, SensorEntity):
-    def __init__(self, instance, device_data, sensor):
+    def __init__(self, instance, device_data, sensor) -> None:
         """Initialize the thermostat temperature sensor."""
         super().__init__(instance, device_data["id"], sensor.lower())
         self._sensor = sensor

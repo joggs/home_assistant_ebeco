@@ -1,4 +1,4 @@
-"""Support for Ebeco wifi-enabled thermostats"""
+"""Support for Ebeco wifi-enabled thermostats."""
 
 from homeassistant.components.climate import (
     ClimateEntity,
@@ -6,12 +6,9 @@ from homeassistant.components.climate import (
     HVACAction,
     HVACMode,
 )
-
-from homeassistant.const import (
-    UnitOfTemperature,
-    ATTR_TEMPERATURE,
-    PRECISION_WHOLE,
-)
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import ATTR_TEMPERATURE, PRECISION_WHOLE, UnitOfTemperature
+from homeassistant.core import HomeAssistant
 
 from .const import (
     DOMAIN as EBECO_DOMAIN,
@@ -24,7 +21,9 @@ from .const import (
 from .entity import EbecoEntity
 
 
-async def async_setup_entry(hass, config_entry, async_add_entities):
+async def async_setup_entry(
+    hass: HomeAssistant, config_entry: ConfigEntry, async_add_entities
+):
     """Set up Ebeco climate platform."""
 
     instance = hass.data[EBECO_DOMAIN][config_entry.entry_id]
@@ -38,7 +37,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 class EbecoClimateDevice(EbecoEntity, ClimateEntity):
     """Ebeco climate device."""
 
-    def __init__(self, instance, device_data, main_sensor):
+    def __init__(self, instance, device_data, main_sensor) -> None:
         """Initialize the thermostat."""
         super().__init__(instance, device_data["id"], main_sensor)
         self.main_sensor = main_sensor
@@ -79,6 +78,7 @@ class EbecoClimateDevice(EbecoEntity, ClimateEntity):
 
     @property
     def icon(self):
+        """Returns the icon we should display."""
         if self.hvac_mode == HVACMode.HEAT:
             return "mdi:radiator"
         else:
@@ -178,6 +178,7 @@ class EbecoClimateDevice(EbecoEntity, ClimateEntity):
         )
 
     async def async_set_preset_mode(self, preset_mode):
+        """Set new preset to use."""
         await self.async_change(
             {
                 "id": self._device["id"],
