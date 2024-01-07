@@ -2,9 +2,8 @@
 
 import logging
 
-from .data_handler import EbecoApi
-
 from .const import EbecoClimateActions
+from .data_handler import EbecoApi
 
 _LOGGER = logging.getLogger(__name__)
 

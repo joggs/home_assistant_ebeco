@@ -1,14 +1,14 @@
 """Communicate with the Ebeco API"""
 
-from collections import namedtuple
-from enum import Enum
 import asyncio
+from collections import namedtuple
 import datetime
+from enum import Enum
 import json
 import logging
+
 import aiohttp
 import async_timeout
-
 
 API_URL = "https://ebecoconnect.com/api"
 _LOGGER = logging.getLogger(__name__)

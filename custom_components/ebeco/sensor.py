@@ -1,20 +1,20 @@
-"""Support power, energy and temperature measurement for Ebeco wifi-enabled thermostats"""
+"""Support power, energy and temperature measurement for Ebeco wifi-enabled thermostats."""
 
-from homeassistant.components.sensor import (
-    SensorStateClass,
-    SensorEntity,
-    StateType,
-    SensorDeviceClass,
-)
-from homeassistant.const import UnitOfPower, UnitOfEnergy, UnitOfTemperature
 from homeassistant.components.binary_sensor import (
     BinarySensorDeviceClass,
     BinarySensorEntity,
 )
+from homeassistant.components.sensor import (
+    SensorDeviceClass,
+    SensorEntity,
+    SensorStateClass,
+    StateType,
+)
+from homeassistant.const import UnitOfEnergy, UnitOfPower, UnitOfTemperature
 from homeassistant.helpers.entity import EntityCategory
 
+from .const import DOMAIN as EBECO_DOMAIN, MAIN_SENSOR
 from .entity import EbecoEntity
-from .const import MAIN_SENSOR, DOMAIN as EBECO_DOMAIN
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):

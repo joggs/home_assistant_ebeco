@@ -3,8 +3,8 @@
 from datetime import timedelta
 import logging
 
-from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.const import CONF_DEVICE_ID, CONF_EMAIL, CONF_PASSWORD, Platform
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .const import DOMAIN, REFRESH_INTERVAL_MINUTES

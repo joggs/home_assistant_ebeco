@@ -1,12 +1,13 @@
 """Config flow for Ebeco device"""
-import voluptuous as vol
 import logging
+
+import voluptuous as vol
 
 from homeassistant import config_entries
 from homeassistant.const import CONF_DEVICE_ID, CONF_EMAIL, CONF_PASSWORD
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
-from .const import MAIN_SENSOR, DOMAIN
+from .const import DOMAIN, MAIN_SENSOR
 from .data_handler import EbecoApi
 
 _LOGGER = logging.getLogger(__name__)
