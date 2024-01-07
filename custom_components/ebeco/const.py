@@ -1,6 +1,6 @@
-"""Constants used by the Ebeco integration"""
+"""Constants used by the Ebeco integration."""
 
-from homeassistant.backports.enum import StrEnum
+from enum import StrEnum
 
 DOMAIN = "ebeco"
 MAIN_SENSOR = "main_sensor"

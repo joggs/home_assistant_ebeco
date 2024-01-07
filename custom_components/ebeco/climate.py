@@ -1,21 +1,14 @@
-"""Support for Ebeco wifi-enabled thermostats"""
+"""Support for Ebeco wifi-enabled thermostats."""
 
-from homeassistant.components.climate import ClimateEntity
-from homeassistant.components.climate.const import (
-    HVAC_MODE_OFF,
-    HVAC_MODE_HEAT,
-    CURRENT_HVAC_HEAT,
-    CURRENT_HVAC_IDLE,
-    CURRENT_HVAC_OFF,
-    SUPPORT_PRESET_MODE,
-    SUPPORT_TARGET_TEMPERATURE,
+from homeassistant.components.climate import (
+    ClimateEntity,
+    ClimateEntityFeature,
+    HVACAction,
+    HVACMode,
 )
-
-from homeassistant.const import (
-    TEMP_CELSIUS,
-    ATTR_TEMPERATURE,
-    PRECISION_WHOLE,
-)
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import ATTR_TEMPERATURE, PRECISION_WHOLE, UnitOfTemperature
+from homeassistant.core import HomeAssistant
 
 from .const import (
     DOMAIN as EBECO_DOMAIN,
@@ -28,7 +21,9 @@ from .const import (
 from .entity import EbecoEntity
 
 
-async def async_setup_entry(hass, config_entry, async_add_entities):
+async def async_setup_entry(
+    hass: HomeAssistant, config_entry: ConfigEntry, async_add_entities
+):
     """Set up Ebeco climate platform."""
 
     instance = hass.data[EBECO_DOMAIN][config_entry.entry_id]
@@ -42,7 +37,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 class EbecoClimateDevice(EbecoEntity, ClimateEntity):
     """Ebeco climate device."""
 
-    def __init__(self, instance, device_data, main_sensor):
+    def __init__(self, instance, device_data, main_sensor) -> None:
         """Initialize the thermostat."""
         super().__init__(instance, device_data["id"], main_sensor)
         self.main_sensor = main_sensor
@@ -50,7 +45,9 @@ class EbecoClimateDevice(EbecoEntity, ClimateEntity):
     @property
     def supported_features(self):
         """Return the list of supported features."""
-        return SUPPORT_TARGET_TEMPERATURE | SUPPORT_PRESET_MODE
+        return (
+            ClimateEntityFeature.TARGET_TEMPERATURE | ClimateEntityFeature.PRESET_MODE
+        )
 
     @property
     def unique_id(self):
@@ -64,43 +61,38 @@ class EbecoClimateDevice(EbecoEntity, ClimateEntity):
 
     @property
     def hvac_action(self):
-        """Return hvac action ie. the thermostat relay state.
-        Need to be one of CURRENT_HVAC_*.
-        """
-        if self.hvac_mode == HVAC_MODE_HEAT:
+        """Return hvac action ie. the thermostat relay state."""
+        if self.hvac_mode == HVACMode.HEAT:
             if self._device["relayOn"]:
-                return CURRENT_HVAC_HEAT
-            return CURRENT_HVAC_IDLE
+                return HVACAction.HEATING
+            return HVACAction.IDLE
         else:
-            return CURRENT_HVAC_OFF
+            return HVACAction.OFF
 
     @property
     def hvac_mode(self):
-        """Return hvac operation ie. heat, cool mode.
-        Need to be one of HVAC_MODE_*.
-        """
+        """Return hvac operation ie. heat, cool mode."""
         if self._device["powerOn"]:
-            return HVAC_MODE_HEAT
-        return HVAC_MODE_OFF
+            return HVACMode.HEAT
+        return HVACMode.OFF
 
     @property
     def icon(self):
-        if self.hvac_mode == HVAC_MODE_HEAT:
+        """Returns the icon we should display."""
+        if self.hvac_mode == HVACMode.HEAT:
             return "mdi:radiator"
         else:
             return "mdi:radiator-off"
 
     @property
     def hvac_modes(self):
-        """Return the list of available hvac operation modes.
-        Need to be a subset of HVAC_MODES.
-        """
-        return [HVAC_MODE_HEAT, HVAC_MODE_OFF]
+        """Return the list of available hvac operation modes."""
+        return [HVACMode.HEAT, HVACMode.OFF]
 
     @property
     def temperature_unit(self):
         """Return the unit of measurement which this device uses."""
-        return TEMP_CELSIUS
+        return UnitOfTemperature.CELSIUS
 
     @property
     def min_temp(self):
@@ -152,7 +144,7 @@ class EbecoClimateDevice(EbecoEntity, ClimateEntity):
 
     async def async_set_hvac_mode(self, hvac_mode):
         """Set hvac mode."""
-        if hvac_mode == HVAC_MODE_HEAT:
+        if hvac_mode == HVACMode.HEAT:
             await self.async_change(
                 {
                     "id": self._device["id"],
@@ -160,7 +152,7 @@ class EbecoClimateDevice(EbecoEntity, ClimateEntity):
                     "state": True,
                 }
             )
-        elif hvac_mode == HVAC_MODE_OFF:
+        elif hvac_mode == HVACMode.OFF:
             await self.async_change(
                 {
                     "id": self._device["id"],
@@ -186,6 +178,7 @@ class EbecoClimateDevice(EbecoEntity, ClimateEntity):
         )
 
     async def async_set_preset_mode(self, preset_mode):
+        """Set new preset to use."""
         await self.async_change(
             {
                 "id": self._device["id"],

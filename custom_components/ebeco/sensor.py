@@ -1,28 +1,27 @@
-"""Support power, energy and temperature measurement for Ebeco wifi-enabled thermostats"""
+"""Support power, energy and temperature measurement for Ebeco wifi-enabled thermostats."""
 
-from homeassistant.components.sensor import (
-    STATE_CLASS_MEASUREMENT,
-    STATE_CLASS_TOTAL_INCREASING,
-    SensorEntity,
-    StateType,
-    SensorDeviceClass,
-)
-from homeassistant.const import (
-    ENERGY_KILO_WATT_HOUR,
-    POWER_WATT,
-    TEMP_CELSIUS,
-)
 from homeassistant.components.binary_sensor import (
     BinarySensorDeviceClass,
     BinarySensorEntity,
 )
+from homeassistant.components.sensor import (
+    SensorDeviceClass,
+    SensorEntity,
+    SensorStateClass,
+    StateType,
+)
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import UnitOfEnergy, UnitOfPower, UnitOfTemperature
+from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity import EntityCategory
 
+from .const import DOMAIN as EBECO_DOMAIN, MAIN_SENSOR
 from .entity import EbecoEntity
-from .const import MAIN_SENSOR, DOMAIN as EBECO_DOMAIN
 
 
-async def async_setup_entry(hass, config_entry, async_add_entities):
+async def async_setup_entry(
+    hass: HomeAssistant, config_entry: ConfigEntry, async_add_entities
+):
     """Set up Ebeco sensor platform."""
 
     instance = hass.data[EBECO_DOMAIN][config_entry.entry_id]
@@ -39,7 +38,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
 
 class EbecoRelaySensor(EbecoEntity, BinarySensorEntity):
-    def __init__(self, instance, device_data, sensor):
+    def __init__(self, instance, device_data, sensor) -> None:
         """Initialize the thermostat."""
         super().__init__(instance, device_data["id"], sensor)
 
@@ -69,7 +68,7 @@ class EbecoRelaySensor(EbecoEntity, BinarySensorEntity):
 
 
 class EbecoPowerSensor(EbecoEntity, SensorEntity):
-    def __init__(self, instance, device_data, sensor):
+    def __init__(self, instance, device_data, sensor) -> None:
         """Initialize the thermostat."""
         super().__init__(instance, device_data["id"], sensor)
         self.main_sensor = MAIN_SENSOR
@@ -82,7 +81,7 @@ class EbecoPowerSensor(EbecoEntity, SensorEntity):
     @property
     def state_class(self) -> str:
         """Return the state class of this entity."""
-        return STATE_CLASS_MEASUREMENT
+        return SensorStateClass.MEASUREMENT
 
     @property
     def unique_id(self):
@@ -101,7 +100,7 @@ class EbecoPowerSensor(EbecoEntity, SensorEntity):
     @property
     def native_unit_of_measurement(self) -> str:
         """Return the unit of measurement of this entity."""
-        return POWER_WATT
+        return UnitOfPower.WATT
 
     @property
     def installed_power(self):
@@ -122,7 +121,7 @@ class EbecoPowerSensor(EbecoEntity, SensorEntity):
 
 
 class EbecoInstalledPowerSensor(EbecoEntity, SensorEntity):
-    def __init__(self, instance, device_data, sensor):
+    def __init__(self, instance, device_data, sensor) -> None:
         """Initialize the thermostat."""
         super().__init__(instance, device_data["id"], sensor)
         self.main_sensor = MAIN_SENSOR
@@ -135,7 +134,7 @@ class EbecoInstalledPowerSensor(EbecoEntity, SensorEntity):
     @property
     def state_class(self) -> str:
         """Return the state class of this entity."""
-        return STATE_CLASS_MEASUREMENT
+        return SensorStateClass.MEASUREMENT
 
     @property
     def unique_id(self):
@@ -154,7 +153,7 @@ class EbecoInstalledPowerSensor(EbecoEntity, SensorEntity):
     @property
     def native_unit_of_measurement(self) -> str:
         """Return the unit of measurement of this entity."""
-        return POWER_WATT
+        return UnitOfPower.WATT
 
     @property
     def installed_power(self):
@@ -172,7 +171,7 @@ class EbecoEnergySensor(EbecoEntity, SensorEntity):
     _divisor: int = 1
     _multiplier: int = 1
 
-    def __init__(self, instance, device_data, sensor):
+    def __init__(self, instance, device_data, sensor) -> None:
         """Initialize the thermostat energy sensor."""
         super().__init__(instance, device_data["id"], sensor)
         self.main_sensor = MAIN_SENSOR
@@ -185,7 +184,7 @@ class EbecoEnergySensor(EbecoEntity, SensorEntity):
     @property
     def state_class(self) -> str:
         """Return the state class of this entity."""
-        return STATE_CLASS_TOTAL_INCREASING
+        return SensorStateClass.TOTAL_INCREASING
 
     @property
     def unique_id(self):
@@ -200,7 +199,7 @@ class EbecoEnergySensor(EbecoEntity, SensorEntity):
     @property
     def native_unit_of_measurement(self) -> str:
         """Return the unit of measurement of this entity."""
-        return ENERGY_KILO_WATT_HOUR
+        return UnitOfEnergy.KILO_WATT_HOUR
 
     @property
     def todays_on_minutes(self):
@@ -229,7 +228,7 @@ class EbecoEnergySensor(EbecoEntity, SensorEntity):
 
 
 class EbecoTemperatureSensor(EbecoEntity, SensorEntity):
-    def __init__(self, instance, device_data, sensor):
+    def __init__(self, instance, device_data, sensor) -> None:
         """Initialize the thermostat temperature sensor."""
         super().__init__(instance, device_data["id"], sensor.lower())
         self._sensor = sensor
@@ -242,7 +241,7 @@ class EbecoTemperatureSensor(EbecoEntity, SensorEntity):
     @property
     def state_class(self) -> str:
         """Return the state class of this entity."""
-        return STATE_CLASS_MEASUREMENT
+        return SensorStateClass.MEASUREMENT
 
     @property
     def unique_id(self):
@@ -257,7 +256,7 @@ class EbecoTemperatureSensor(EbecoEntity, SensorEntity):
     @property
     def native_unit_of_measurement(self) -> str:
         """Return the unit of measurement of this entity."""
-        return TEMP_CELSIUS
+        return UnitOfTemperature.CELSIUS
 
     @property
     def native_value(self) -> StateType:
