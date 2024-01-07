@@ -1,17 +1,12 @@
 """Support power, energy and temperature measurement for Ebeco wifi-enabled thermostats"""
 
 from homeassistant.components.sensor import (
-    STATE_CLASS_MEASUREMENT,
-    STATE_CLASS_TOTAL_INCREASING,
+    SensorStateClass,
     SensorEntity,
     StateType,
     SensorDeviceClass,
 )
-from homeassistant.const import (
-    ENERGY_KILO_WATT_HOUR,
-    POWER_WATT,
-    TEMP_CELSIUS,
-)
+from homeassistant.const import UnitOfPower, UnitOfEnergy, UnitOfTemperature
 from homeassistant.components.binary_sensor import (
     BinarySensorDeviceClass,
     BinarySensorEntity,
@@ -82,7 +77,7 @@ class EbecoPowerSensor(EbecoEntity, SensorEntity):
     @property
     def state_class(self) -> str:
         """Return the state class of this entity."""
-        return STATE_CLASS_MEASUREMENT
+        return SensorStateClass.MEASUREMENT
 
     @property
     def unique_id(self):
@@ -101,7 +96,7 @@ class EbecoPowerSensor(EbecoEntity, SensorEntity):
     @property
     def native_unit_of_measurement(self) -> str:
         """Return the unit of measurement of this entity."""
-        return POWER_WATT
+        return UnitOfPower.WATT
 
     @property
     def installed_power(self):
@@ -135,7 +130,7 @@ class EbecoInstalledPowerSensor(EbecoEntity, SensorEntity):
     @property
     def state_class(self) -> str:
         """Return the state class of this entity."""
-        return STATE_CLASS_MEASUREMENT
+        return SensorStateClass.MEASUREMENT
 
     @property
     def unique_id(self):
@@ -154,7 +149,7 @@ class EbecoInstalledPowerSensor(EbecoEntity, SensorEntity):
     @property
     def native_unit_of_measurement(self) -> str:
         """Return the unit of measurement of this entity."""
-        return POWER_WATT
+        return UnitOfPower.WATT
 
     @property
     def installed_power(self):
@@ -185,7 +180,7 @@ class EbecoEnergySensor(EbecoEntity, SensorEntity):
     @property
     def state_class(self) -> str:
         """Return the state class of this entity."""
-        return STATE_CLASS_TOTAL_INCREASING
+        return SensorStateClass.TOTAL_INCREASING
 
     @property
     def unique_id(self):
@@ -200,7 +195,7 @@ class EbecoEnergySensor(EbecoEntity, SensorEntity):
     @property
     def native_unit_of_measurement(self) -> str:
         """Return the unit of measurement of this entity."""
-        return ENERGY_KILO_WATT_HOUR
+        return UnitOfEnergy.KILO_WATT_HOUR
 
     @property
     def todays_on_minutes(self):
@@ -242,7 +237,7 @@ class EbecoTemperatureSensor(EbecoEntity, SensorEntity):
     @property
     def state_class(self) -> str:
         """Return the state class of this entity."""
-        return STATE_CLASS_MEASUREMENT
+        return SensorStateClass.MEASUREMENT
 
     @property
     def unique_id(self):
@@ -257,7 +252,7 @@ class EbecoTemperatureSensor(EbecoEntity, SensorEntity):
     @property
     def native_unit_of_measurement(self) -> str:
         """Return the unit of measurement of this entity."""
-        return TEMP_CELSIUS
+        return UnitOfTemperature.CELSIUS
 
     @property
     def native_value(self) -> StateType:

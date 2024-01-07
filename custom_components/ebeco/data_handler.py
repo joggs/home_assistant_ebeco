@@ -108,7 +108,6 @@ class EbecoApi:
         self._auth_header = {"Authorization": f"Bearer {self._access_token}"}
 
     async def _request(self, url, requesttype, json_data=None, retry=3):
-
         if self._access_token is None:
             await self._getAccessToken(self)
         try:
