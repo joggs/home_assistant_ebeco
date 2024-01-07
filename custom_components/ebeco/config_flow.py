@@ -1,10 +1,11 @@
 """Config flow for Ebeco device."""
 import logging
+from typing import Any, Optional
 
 import voluptuous as vol
 
 from homeassistant import config_entries
-from homeassistant.const import CONF_DEVICE_ID, CONF_EMAIL, CONF_PASSWORD
+from homeassistant.const import CONF_DEVICE_ID, CONF_DEVICES, CONF_EMAIL, CONF_PASSWORD
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .const import DOMAIN, MAIN_SENSOR
@@ -25,6 +26,7 @@ class EbecoFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
     VERSION = 1
     DOMAIN = DOMAIN
+    data: Optional[dict[str, Any]]
 
     async def async_step_user(self, user_input=None):
         """Get configuration from the user."""
@@ -38,10 +40,16 @@ class EbecoFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                     email, password, async_get_clientsession(self.hass)
                 ).fetch_user_devices()
             except Exception:
+                _LOGGER.warning(
+                    "Unable to connect/authenticate with Ebeco API", exc_info=1
+                )
                 errors["base"] = "cannot_connect"
             else:
-                user_input["devices"] = data
-                self.init_data = user_input
+                self.data = {
+                    CONF_EMAIL: email,
+                    CONF_PASSWORD: password,
+                    CONF_DEVICES: data,
+                }
                 return await self.async_step_pick_device()
 
         return self.async_show_form(
@@ -61,13 +69,14 @@ class EbecoFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             self._abort_if_unique_id_configured()
 
             device_data = next(
-                (e for e in self.init_data["devices"] if str(e["id"]) == device), None
+                (e for e in self.data[CONF_DEVICES] if str(e["id"]) == device),
+                None,
             )
             data = {
                 CONF_DEVICE_ID: device,
                 MAIN_SENSOR: main_sensor,
-                CONF_EMAIL: self.init_data[CONF_EMAIL],
-                CONF_PASSWORD: self.init_data[CONF_PASSWORD],
+                CONF_EMAIL: self.data[CONF_EMAIL],
+                CONF_PASSWORD: self.data[CONF_PASSWORD],
             }
             return self.async_create_entry(
                 title=device_data["displayName"],
@@ -76,7 +85,7 @@ class EbecoFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
         devices = {
             str(device["id"]): device["displayName"]
-            for device in self.init_data["devices"]
+            for device in self.data[CONF_DEVICES]
         }
         schema = vol.Schema(
             {
