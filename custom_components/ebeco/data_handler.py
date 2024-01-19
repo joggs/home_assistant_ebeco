@@ -98,7 +98,7 @@ class EbecoApi:
                 },
             )
 
-            if response.status == HTTPStatus.OK:
+            if response.status != HTTPStatus.TOO_MANY_REQUESTS:
                 break
 
             _LOGGER.info("Backing off")
@@ -147,7 +147,10 @@ class EbecoApi:
                         )
 
             if response.status != 200:
-                self._access_token = None
+                if response.status != HTTPStatus.TOO_MANY_REQUESTS:
+                    # No need to reset token if we're simply being rate limited
+                    self._access_token = None
+
                 if retry > 0:
                     await asyncio.sleep(1)
                     return await self._request(
