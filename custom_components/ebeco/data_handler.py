@@ -87,15 +87,22 @@ class EbecoApi:
             json_data=json_data,
         )
 
-    async def _getAccessToken(self, arg):
-        response = await self.websession.post(
-            f"{API_URL}/TokenAuth",
-            headers={"Content-type": "application/json", "Abp.TenantId": "1"},
-            json={
-                "userNameOrEmailAddress": self._username,
-                "password": self._password,
-            },
-        )
+    async def _getAccessToken(self, arg, max_retries: int = 6):
+        for attempt in range(max_retries):
+            response = await self.websession.post(
+                f"{API_URL}/TokenAuth",
+                headers={"Content-type": "application/json", "Abp.TenantId": "1"},
+                json={
+                    "userNameOrEmailAddress": self._username,
+                    "password": self._password,
+                },
+            )
+
+            if response.status == HTTPStatus.OK:
+                break
+
+            _LOGGER.info("Backing off")
+            await asyncio.sleep(2**attempt)
 
         response_string = await response.text()
         token_data = json.loads(
