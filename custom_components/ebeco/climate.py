@@ -108,9 +108,15 @@ class EbecoClimateDevice(EbecoEntity, ClimateEntity):
     def current_temperature(self):
         """Return the current temperature."""
         if self.main_sensor == "floor":
-            return self._device["temperatureFloor"]
+            if "temperatureFloorDecimals" in self._device:
+                return self._device["temperatureFloorDecimals"]
+            else:
+                return self._device["temperatureFloor"]
         else:
-            return self._device["temperatureRoom"]
+            if "temperatureRoomDecimals" in self._device:
+                return self._device["temperatureRoomDecimals"]
+            else:
+                return self._device["temperatureRoom"]
 
     @property
     def target_temperature(self):
