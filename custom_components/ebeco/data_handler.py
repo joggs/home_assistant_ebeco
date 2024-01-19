@@ -4,6 +4,7 @@ import asyncio
 from collections import namedtuple
 import datetime
 from enum import Enum
+from http import HTTPStatus
 import json
 import logging
 
