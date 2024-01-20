@@ -4,6 +4,7 @@ import asyncio
 from collections import namedtuple
 import datetime
 from enum import Enum
+from http import HTTPStatus
 import json
 import logging
 
@@ -87,15 +88,22 @@ class EbecoApi:
             json_data=json_data,
         )
 
-    async def _getAccessToken(self, arg):
-        response = await self.websession.post(
-            f"{API_URL}/TokenAuth",
-            headers={"Content-type": "application/json", "Abp.TenantId": "1"},
-            json={
-                "userNameOrEmailAddress": self._username,
-                "password": self._password,
-            },
-        )
+    async def _getAccessToken(self, arg, max_retries: int = 6):
+        for attempt in range(max_retries):
+            response = await self.websession.post(
+                f"{API_URL}/TokenAuth",
+                headers={"Content-type": "application/json", "Abp.TenantId": "1"},
+                json={
+                    "userNameOrEmailAddress": self._username,
+                    "password": self._password,
+                },
+            )
+
+            if response.status != HTTPStatus.TOO_MANY_REQUESTS:
+                break
+
+            _LOGGER.info("Backing off")
+            await asyncio.sleep(2**attempt)
 
         response_string = await response.text()
         token_data = json.loads(
@@ -140,7 +148,10 @@ class EbecoApi:
                         )
 
             if response.status != 200:
-                self._access_token = None
+                if response.status != HTTPStatus.TOO_MANY_REQUESTS:
+                    # No need to reset token if we're simply being rate limited
+                    self._access_token = None
+
                 if retry > 0:
                     await asyncio.sleep(1)
                     return await self._request(
