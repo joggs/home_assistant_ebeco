@@ -41,6 +41,7 @@ class EbecoClimateDevice(EbecoEntity, ClimateEntity):
         """Initialize the thermostat."""
         super().__init__(instance, device_data["id"], main_sensor)
         self.main_sensor = main_sensor
+        self._enable_turn_on_off_backwards_compatibility = False
 
     @property
     def supported_features(self):
