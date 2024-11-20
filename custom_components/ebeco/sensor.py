@@ -260,9 +260,5 @@ class EbecoTemperatureSensor(EbecoEntity, SensorEntity):
 
     @property
     def native_value(self) -> StateType:
-        """Return the state of the entity with decimals."""
-        key = f"temperature{self._sensor}"
-        key_decimals = f"{key}Decimals"
-        if key_decimals in self._device:
-            return self._device[key_decimals]
-        return self._device[key]
+        """Return the state of the entity."""
+        return self._device[f"temperature{self._sensor}"]
