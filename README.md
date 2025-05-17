@@ -1,5 +1,6 @@
 # Ebeco thermostats
-![Validate with hassfest](https://github.com/joggs/home_assistant_ebeco/workflows/Validate%20with%20hassfest/badge.svg)
+[![Validate with hassfest](https://github.com/joggs/home_assistant_ebeco/actions/workflows/hassfest.yml/badge.svg)](https://github.com/joggs/home_assistant_ebeco/actions/workflows/hassfest.yml)
+
 [![GitHub Release][releases-shield]][releases]
 [![hacs_badge][hacs-shield]][hacs]
 
