@@ -8,12 +8,12 @@ from homeassistant.components.sensor import (
     SensorDeviceClass,
     SensorEntity,
     SensorStateClass,
-    StateType,
 )
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import UnitOfEnergy, UnitOfPower, UnitOfTemperature
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity import EntityCategory
+from homeassistant.helpers.typing import StateType
 
 from .const import DOMAIN as EBECO_DOMAIN, MAIN_SENSOR
 from .entity import EbecoEntity
