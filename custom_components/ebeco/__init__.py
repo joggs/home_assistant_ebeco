@@ -36,10 +36,17 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         _LOGGER.debug("Attempting to fetch new data from Ebeco API")
         try:
             data = await device.async_get()
-            _LOGGER.debug("Received data: %s", data)
-            return data
         except Exception as err:
-            raise UpdateFailed(err) from err
+            # Include the exception type: TimeoutError and friends have an
+            # empty message, which used to make the log line unreadable.
+            msg = type(err).__name__
+            if str(err):
+                msg += f": {err}"
+            raise UpdateFailed(msg) from err
+        if not data:
+            raise UpdateFailed("Empty response from Ebeco API")
+        _LOGGER.debug("Received data: %s", data)
+        return data
 
     coordinator = DataUpdateCoordinator(
         hass,
