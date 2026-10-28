@@ -7,6 +7,8 @@ from homeassistant.components.climate import (
     SERVICE_SET_HVAC_MODE,
     SERVICE_SET_PRESET_MODE,
     SERVICE_SET_TEMPERATURE,
+    SERVICE_TURN_OFF,
+    SERVICE_TURN_ON,
     HVACAction,
     HVACMode,
 )
@@ -137,3 +139,21 @@ async def test_write_failure_is_logged_and_state_kept(
     assert "Unable to update Ebeco thermostat" in caplog.text
     assert "HTTP 500" in caplog.text
     assert hass.states.get(eid).attributes["temperature"] == 21.0
+
+
+async def test_turn_off_and_turn_on_services(hass, setup_integration, mock_api):
+    """climate.turn_on/turn_off need the TURN_ON/TURN_OFF features declared."""
+    eid = entity_id(hass, "climate", "1118")
+    await hass.services.async_call(
+        CLIMATE_DOMAIN, SERVICE_TURN_OFF, {ATTR_ENTITY_ID: eid}, blocking=True
+    )
+    await hass.async_block_till_done()
+    assert _puts(mock_api) == [{"id": "1118", "powerOn": False}]
+    assert hass.states.get(eid).state == HVACMode.OFF
+
+    await hass.services.async_call(
+        CLIMATE_DOMAIN, SERVICE_TURN_ON, {ATTR_ENTITY_ID: eid}, blocking=True
+    )
+    await hass.async_block_till_done()
+    assert _puts(mock_api)[-1] == {"id": "1118", "powerOn": True}
+    assert hass.states.get(eid).state == HVACMode.HEAT
