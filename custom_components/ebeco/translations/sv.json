@@ -1,0 +1,29 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Termostaten är redan tillagd"
+        },
+        "error": {
+            "cannot_connect": "Kunde inte ansluta till Ebeco"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "email": "Användarnamn (e-postadress)",
+                    "password": "Lösenord",
+                    "main_sensor": "Huvudgivare"
+                },
+                "description": "Anslut till Ebecos moln med samma konto som i Ebeco-appen.",
+                "title": "Anslut"
+            },
+            "pick_device": {
+                "data": {
+                    "main_sensor": "Huvudgivare",
+                    "device": "Termostat att lägga till"
+                },
+                "title": "Välj termostat",
+                "description": "Välj termostat och vilken givare (golv eller rum) som ska visas som aktuell temperatur"
+            }
+        }
+    }
+}

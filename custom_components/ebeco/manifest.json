@@ -1,11 +1,14 @@
 {
   "domain": "ebeco",
-  "name": "Ebeco",  
-  "codeowners": ["@joggs"],
+  "name": "Ebeco",
+  "codeowners": [
+    "@joggs"
+  ],
   "config_flow": true,
   "documentation": "https://github.com/joggs/home_assistant_ebeco",
+  "integration_type": "device",
   "iot_class": "cloud_polling",
-  "issue_tracker": "https://github.com/joggs/home_assistant_ebeco/issues",    
+  "issue_tracker": "https://github.com/joggs/home_assistant_ebeco/issues",
   "requirements": [],
-  "version": "0.6.12"
+  "version": "0.6.13"
 }
