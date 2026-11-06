@@ -38,6 +38,24 @@ async def test_climate_attributes(hass, setup_integration):
     assert attrs["preset_modes"] == ["Manual", "Home", "Timer"]
 
 
+async def test_no_deprecation_reports(hass, setup_integration, caplog):
+    """Home Assistant logs when an integration uses something deprecated, e.g.
+    2026.11 renamed the climate temperature properties to native_* (the old
+    names stop working in 2027.11). Fail on any such report so a rename is
+    caught while both names still work. tests/check_upcoming_ha.py runs the
+    same check against the beta and dev images before the suite's HA is bumped."""
+    reports = [
+        record.getMessage()
+        for record in caplog.records
+        if "deprecat" in record.getMessage().lower()
+        and (
+            "ebeco" in record.getMessage().lower()
+            or record.name.startswith("custom_components.ebeco")
+        )
+    ]
+    assert reports == []
+
+
 async def test_climate_uses_room_sensor_when_configured(
     hass, config_entry, mock_api, no_sleep_ha
 ):
