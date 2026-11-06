@@ -1,7 +1,7 @@
 # Ebeco thermostats for Home Assistant
 
 [![GitHub release][releases-shield]][releases]
-[![HACS default][hacs-shield]][hacs]
+[![Marketplace default][marketplace-shield]][marketplace]
 [![Tests][tests-shield]][tests]
 [![Validate with hassfest][hassfest-shield]][hassfest]
 
@@ -31,10 +31,17 @@ Programs and advanced settings are still made in the Ebeco app or on the thermos
 1. Install the Ebeco Connect app, create an account and make sure you can control the
    thermostat from the app.
 2. Install this integration from the Marketplace (Home Assistant 2026.11 and later) or
-   [HACS](https://hacs.xyz/) on older versions: search for *Ebeco*. You can also copy
-   `custom_components/ebeco` into your Home Assistant `config/custom_components/` folder.
+   [HACS](https://hacs.xyz/) on older versions: search for *Ebeco*, or use this button.
+
+   [![Open Ebeco in the Marketplace of your Home Assistant.][marketplace-badge]][marketplace-link]
+
+   You can also copy `custom_components/ebeco` into your Home Assistant
+   `config/custom_components/` folder.
 3. Restart Home Assistant.
-4. Go to *Settings → Devices & services → Add integration* and pick **Ebeco**.
+4. Go to *Settings → Devices & services → Add integration* and pick **Ebeco**, or use this
+   button.
+
+   [![Start setting up Ebeco in your Home Assistant.][setup-badge]][setup-link]
 5. Log in with the same e-mail and password as in the Ebeco app, then choose the thermostat
    and which sensor (floor or room) the thermostat should show as its current temperature.
 
@@ -92,8 +99,12 @@ Ebeco's API documentation: https://www.ebeco.se/support/ebeco-open-api
 
 [releases]: https://github.com/joggs/home_assistant_ebeco/releases
 [releases-shield]: https://img.shields.io/github/v/release/joggs/home_assistant_ebeco
-[hacs]: https://hacs.xyz/docs/default_repositories
-[hacs-shield]: https://img.shields.io/badge/HACS-Default-41BDF5.svg
+[marketplace]: https://www.home-assistant.io/integrations/marketplace/
+[marketplace-shield]: https://img.shields.io/badge/Marketplace-Default-41BDF5.svg
+[marketplace-badge]: https://my.home-assistant.io/badges/marketplace_repository.svg
+[marketplace-link]: https://my.home-assistant.io/redirect/marketplace_repository/?owner=joggs&repository=home_assistant_ebeco&category=integration
+[setup-badge]: https://my.home-assistant.io/badges/config_flow_start.svg
+[setup-link]: https://my.home-assistant.io/redirect/config_flow_start/?domain=ebeco
 [tests]: https://github.com/joggs/home_assistant_ebeco/actions/workflows/tests.yml
 [tests-shield]: https://github.com/joggs/home_assistant_ebeco/actions/workflows/tests.yml/badge.svg
 [hassfest]: https://github.com/joggs/home_assistant_ebeco/actions/workflows/hassfest.yml
