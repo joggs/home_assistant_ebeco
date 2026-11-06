@@ -1,0 +1,35 @@
+name: Upcoming Home Assistant
+
+# Imports the integration inside Home Assistant's beta and dev images so an
+# import error or a deprecation in the next release shows up here before
+# users hit it. The schedule is the day after HA's Wednesday beta/release.
+on:
+  push:
+    paths:
+      - "custom_components/**"
+      - "tests/check_upcoming_ha.py"
+      - ".github/workflows/upcoming-ha.yml"
+  pull_request:
+    paths:
+      - "custom_components/**"
+      - "tests/check_upcoming_ha.py"
+      - ".github/workflows/upcoming-ha.yml"
+  schedule:
+    - cron: "0 6 * * 4"
+  workflow_dispatch:
+
+jobs:
+  import-check:
+    name: home-assistant:${{ matrix.tag }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        tag: [beta, dev]
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker pull -q ghcr.io/home-assistant/home-assistant:${{ matrix.tag }}
+      - run: >-
+          docker run --rm -v "$PWD:/w:ro"
+          ghcr.io/home-assistant/home-assistant:${{ matrix.tag }}
+          python /w/tests/check_upcoming_ha.py
