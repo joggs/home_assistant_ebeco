@@ -94,7 +94,7 @@ class EbecoClimateDevice(EbecoEntity, ClimateEntity):
         return [HVACMode.HEAT, HVACMode.OFF]
 
     @property
-    def temperature_unit(self):
+    def native_temperature_unit(self):
         """Return the unit of measurement which this device uses."""
         return UnitOfTemperature.CELSIUS
 
@@ -109,7 +109,7 @@ class EbecoClimateDevice(EbecoEntity, ClimateEntity):
         return 35
 
     @property
-    def current_temperature(self):
+    def native_current_temperature(self):
         """Return the current temperature."""
         if self.main_sensor == "floor":
             if "temperatureFloorDecimals" in self._device:
@@ -123,9 +123,28 @@ class EbecoClimateDevice(EbecoEntity, ClimateEntity):
                 return self._device["temperatureRoom"]
 
     @property
-    def target_temperature(self):
+    def native_target_temperature(self):
         """Return the temperature we try to reach."""
         return self._device["temperatureSet"]
+
+    # Home Assistant 2026.11 renamed the three properties above to native_*
+    # (the old names are removed in 2027.11). Releases before 2026.11 still
+    # read the old names, so keep them as aliases; 2026.11+ ignores them when
+    # the native_* ones are present and does not log a deprecation warning.
+    @property
+    def temperature_unit(self):
+        """Return the unit of measurement (Home Assistant < 2026.11)."""
+        return self.native_temperature_unit
+
+    @property
+    def current_temperature(self):
+        """Return the current temperature (Home Assistant < 2026.11)."""
+        return self.native_current_temperature
+
+    @property
+    def target_temperature(self):
+        """Return the target temperature (Home Assistant < 2026.11)."""
+        return self.native_target_temperature
 
     @property
     def target_temperature_step(self):
