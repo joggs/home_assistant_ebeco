@@ -30,7 +30,8 @@ Programs and advanced settings are still made in the Ebeco app or on the thermos
 
 1. Install the Ebeco Connect app, create an account and make sure you can control the
    thermostat from the app.
-2. Install this integration with [HACS](https://hacs.xyz/) (search for *Ebeco*), or copy
+2. Install this integration from the Marketplace (Home Assistant 2026.11 and later) or
+   [HACS](https://hacs.xyz/) on older versions: search for *Ebeco*. You can also copy
    `custom_components/ebeco` into your Home Assistant `config/custom_components/` folder.
 3. Restart Home Assistant.
 4. Go to *Settings → Devices & services → Add integration* and pick **Ebeco**.
@@ -79,7 +80,9 @@ python -m pytest tests
 It covers the API client against a fake server (errors, timeouts, rate limiting, logins)
 and the integration in a Home Assistant test core with the API mocked (set-up, polling,
 unavailable/recovery, climate services, sensors, config flow). GitHub Actions runs it on
-every push and pull request, together with hassfest and the HACS validation.
+every push and pull request, together with hassfest and the HACS validation. A separate
+workflow imports the integration in Home Assistant's beta and dev images every week, so
+changes in upcoming releases are caught before they reach users.
 
 Ebeco's API documentation: https://www.ebeco.se/support/ebeco-open-api
 
