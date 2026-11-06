@@ -1,6 +1,9 @@
 {
   "domain": "ebeco",
   "name": "Ebeco",
+  "categories": [
+    "climate.thermostats_heating"
+  ],
   "codeowners": [
     "@joggs"
   ],
