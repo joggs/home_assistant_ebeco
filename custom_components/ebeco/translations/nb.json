@@ -1,0 +1,40 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Termostaten er allerede konfigurert"
+        },
+        "error": {
+            "cannot_connect": "Kunne ikke koble til Ebeco"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "email": "Brukernavn (e-postadresse)",
+                    "password": "Passord",
+                    "main_sensor": "Hovedføler"
+                },
+                "description": "Koble til API-et for Ebeco-termostatene dine.",
+                "title": "Koble til"
+            },
+            "pick_device": {
+                "data": {
+                    "main_sensor": "Hovedføler",
+                    "device_id": "Termostat som skal legges til"
+                },
+                "title": "Velg termostat",
+                "description": "Velg termostat og hvilken føler (gulv eller rom) som skal brukes til å vise aktuell temperatur."
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "title": "Termostatinnstillinger",
+                "description": "Aktiver kun etter at effektregulering er valgt på selve EB-Therm 500-termostaten. Home Assistant vil da tillate innstillingsverdier fra 0 til 100 i stedet for 5–35 °C. Dette valget endrer ikke termostatens reguleringsmodus.",
+                "data": {
+                    "power_control": "Effektregulering (0–100 %)"
+                }
+            }
+        }
+    }
+}
