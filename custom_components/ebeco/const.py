@@ -4,6 +4,7 @@ from enum import StrEnum
 
 DOMAIN = "ebeco"
 MAIN_SENSOR = "main_sensor"
+CONF_POWER_CONTROL = "power_control"
 REFRESH_INTERVAL_MINUTES = 1
 PRESET_MANUAL = "Manual"  # Enable Manual mode on the thermostat
 PRESET_WEEK = "Home"  # Enable The Week program on the thermostat, defined in the phone app or thermostat menu. Misleading value "home" in api instead of "week"

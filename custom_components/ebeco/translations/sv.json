@@ -25,5 +25,16 @@
                 "description": "Välj termostat och vilken givare (golv eller rum) som ska visas som aktuell temperatur"
             }
         }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "title": "Termostatinställningar",
+                "description": "Aktivera endast när effektreglering har valts på EB-Therm 500. Home Assistant tillåter då börvärden på 0–100 i stället för 5–35 °C. Inställningen ändrar inte termostatens regleringsläge.",
+                "data": {
+                    "power_control": "Effektreglering (0–100 %)"
+                }
+            }
+        }
     }
 }

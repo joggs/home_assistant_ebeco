@@ -25,5 +25,16 @@
                 "description": "Select which thermostat and which sensor to use for monitoring"
             }
         }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "title": "Thermostat options",
+                "description": "Enable only after selecting Power Control on the EB-Therm 500 itself. Home Assistant will accept setpoints of 0–100 instead of 5–35 °C. This option does not change the thermostat’s regulation mode.",
+                "data": {
+                    "power_control": "Power Control (0–100%)"
+                }
+            }
+        }
     }
 }
