@@ -163,7 +163,7 @@ class EbecoClimateDevice(EbecoEntity, ClimateEntity):
     @property
     def target_temperature_step(self):
         """Return the supported step of target temperature."""
-        return PRECISION_WHOLE
+        return 5 if self._power_control else PRECISION_WHOLE
 
     @property
     def todays_on_minutes(self):
@@ -211,8 +211,11 @@ class EbecoClimateDevice(EbecoEntity, ClimateEntity):
         temperature = kwargs.get(ATTR_TEMPERATURE)
         if temperature is None:
             return
-        if self._power_control and not 0 <= temperature <= 100:
-            raise HomeAssistantError("Power setpoint must be between 0 and 100 percent")
+        if self._power_control:
+            if not 0 <= temperature <= 100 or temperature % 5 != 0:
+                raise HomeAssistantError(
+                    "Power setpoint must be between 0 and 100 percent in steps of 5"
+                )
         await self.async_change(
             {
                 "id": self._device["id"],
