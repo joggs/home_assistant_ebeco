@@ -16,7 +16,7 @@ One device per thermostat with these entities:
 
 | Entity | What it shows |
 | --- | --- |
-| `climate` | Thermostat: current and target temperature, heat/off, presets *Manual*, *Home* (the week program) and *Timer* |
+| `climate` | Thermostat: current and target temperature, heat/off, presets *Manual*, *Home* (the week program) and *Timer*. Optionally a power level in percent, see [Power control](#power-control) |
 | `sensor … Floor Temperature` | Floor sensor, °C |
 | `sensor … Room Temperature` | Room sensor, °C |
 | `sensor … Relay` | Whether the heating relay is on |
@@ -46,6 +46,32 @@ Programs and advanced settings are still made in the Ebeco app or on the thermos
    and which sensor (floor or room) the thermostat should show as its current temperature.
 
 Repeat step 4–5 for each thermostat.
+
+The integration needs Home Assistant 2025.8 or later.
+
+## Power control
+
+The EB-Therm 500 can run as a power regulator instead of a thermostat, which is useful
+where there is no floor sensor. It then heats for a share of every 20-minute cycle, and the
+setpoint is that share in percent instead of a temperature.
+
+1. Select power control on the thermostat itself, in the installer menu under
+   *Applications* (*Effektstyrning* in Swedish, *Effektstyring* in Norwegian).
+2. In Home Assistant, go to *Settings → Devices & services → Ebeco*, click the cog on the
+   thermostat and turn on **Power Control (0–100%)**.
+
+The `climate` entity then takes 0–100 in steps of 5 instead of 5–35 °C, and has the
+attribute `target_power_percent` for dashboards and templates. `climate.set_temperature`
+and heat/off work as before.
+
+Good to know:
+
+- Ebeco's API does not say which mode the thermostat is in, so the option does not follow
+  the thermostat by itself. Turn it off again when you switch the thermostat back, otherwise
+  a power level is sent as a temperature or the other way round.
+- Home Assistant still shows the setpoint with a temperature unit.
+- 0 shows as *Off* on the thermostat, while the entity stays in *heat*.
+- The current temperature is shown as before.
 
 ## How it works
 
