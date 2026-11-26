@@ -6,9 +6,10 @@ import voluptuous as vol
 
 from homeassistant import config_entries
 from homeassistant.const import CONF_DEVICE_ID, CONF_DEVICES, CONF_EMAIL, CONF_PASSWORD
+from homeassistant.core import callback
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
-from .const import DOMAIN, MAIN_SENSOR
+from .const import CONF_POWER_CONTROL, DOMAIN, MAIN_SENSOR
 from .data_handler import EbecoApi
 
 _LOGGER = logging.getLogger(__name__)
@@ -27,6 +28,12 @@ class EbecoFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
     VERSION = 1
     DOMAIN = DOMAIN
     data: Optional[dict[str, Any]]
+
+    @staticmethod
+    @callback
+    def async_get_options_flow(config_entry):
+        """Return the per-thermostat options flow."""
+        return EbecoOptionsFlow()
 
     async def async_step_user(self, user_input=None):
         """Get configuration from the user."""
@@ -96,4 +103,27 @@ class EbecoFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
         return self.async_show_form(
             step_id="pick_device", data_schema=schema, errors=errors
+        )
+
+
+class EbecoOptionsFlow(config_entries.OptionsFlowWithReload):
+    """Configure the setpoint range for an existing thermostat."""
+
+    async def async_step_init(self, user_input=None):
+        """Configure power control without changing the thermostat's own mode."""
+        if user_input is not None:
+            return self.async_create_entry(
+                title="", data={**self.config_entry.options, **user_input}
+            )
+
+        return self.async_show_form(
+            step_id="init",
+            data_schema=vol.Schema(
+                {
+                    vol.Required(
+                        CONF_POWER_CONTROL,
+                        default=self.config_entry.options.get(CONF_POWER_CONTROL, False),
+                    ): bool,
+                }
+            ),
         )

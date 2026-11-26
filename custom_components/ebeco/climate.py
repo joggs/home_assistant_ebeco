@@ -9,9 +9,11 @@ from homeassistant.components.climate import (
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import ATTR_TEMPERATURE, PRECISION_WHOLE, UnitOfTemperature
 from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import HomeAssistantError
 
 from .const import (
     DOMAIN as EBECO_DOMAIN,
+    CONF_POWER_CONTROL,
     MAIN_SENSOR,
     PRESET_MANUAL,
     PRESET_TIMER,
@@ -30,17 +32,19 @@ async def async_setup_entry(
     sensor = config_entry.data[MAIN_SENSOR]
     device_data = instance["coordinator"].data
     dev = []
-    dev.append(EbecoClimateDevice(instance, device_data, sensor))
+    power_control = config_entry.options.get(CONF_POWER_CONTROL, False)
+    dev.append(EbecoClimateDevice(instance, device_data, sensor, power_control))
     async_add_entities(dev)
 
 
 class EbecoClimateDevice(EbecoEntity, ClimateEntity):
     """Ebeco climate device."""
 
-    def __init__(self, instance, device_data, main_sensor) -> None:
+    def __init__(self, instance, device_data, main_sensor, power_control=False) -> None:
         """Initialize the thermostat."""
         super().__init__(instance, device_data["id"], main_sensor)
         self.main_sensor = main_sensor
+        self._power_control = power_control
         self._enable_turn_on_off_backwards_compatibility = False
 
     @property
@@ -100,13 +104,23 @@ class EbecoClimateDevice(EbecoEntity, ClimateEntity):
 
     @property
     def min_temp(self):
-        """Return the minimum temperature."""
-        return 5
+        """Return the minimum setpoint."""
+        return 0 if self._power_control else 5
 
     @property
     def max_temp(self):
-        """Return the maximum temperature."""
-        return 35
+        """Return the maximum setpoint."""
+        return 100 if self._power_control else 35
+
+    @property
+    def extra_state_attributes(self):
+        """Expose the percentage separately for dashboards in power mode."""
+        if self._power_control:
+            return {
+                "power_control": True,
+                "target_power_percent": self._device["temperatureSet"],
+            }
+        return {"power_control": False}
 
     @property
     def native_current_temperature(self):
@@ -149,7 +163,7 @@ class EbecoClimateDevice(EbecoEntity, ClimateEntity):
     @property
     def target_temperature_step(self):
         """Return the supported step of target temperature."""
-        return PRECISION_WHOLE
+        return 5 if self._power_control else PRECISION_WHOLE
 
     @property
     def todays_on_minutes(self):
@@ -197,6 +211,11 @@ class EbecoClimateDevice(EbecoEntity, ClimateEntity):
         temperature = kwargs.get(ATTR_TEMPERATURE)
         if temperature is None:
             return
+        if self._power_control:
+            if not 0 <= temperature <= 100 or temperature % 5 != 0:
+                raise HomeAssistantError(
+                    "Power setpoint must be between 0 and 100 percent in steps of 5"
+                )
         await self.async_change(
             {
                 "id": self._device["id"],
